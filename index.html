@@ -132,25 +132,12 @@
               fillColor: '#ff99de'
           };
         }
-        
-        // //Adding mousover event with label
-        // onEachFeature : function (feature, layer){
-        //   var props = layer.feature.properties;
-        //   layer.bindTooltip(`<b> ${props[name]}</b><br>
-        //                     Average Rent: $${props[rent]}`);
-        // }
             
       }).addTo(map);
       drawAnotherLayer()
       // call to new function here gets the data out of the callback function
     //   drawMap(dataLayer); 
     });
-
-    $.getJSON("data/JunePhotoperiodKY.geojson", function(data) {
-        // the data loaded from the file is accessible here within this function scope!
-        console.log(data);
-        });
-        // `data` parameter is not accessible here!
 
 
     // function drawMap(dataLayer) {
@@ -239,6 +226,44 @@
     //   // add the legend to the map
     //   legend.addTo(map);
     // }
+
+    //Adding city points, will add layer name
+    //WHOA this takes forever to load, maybe I could add just the 10-15 biggest cities to the map?
+    //Look up top 10 cities, then filter based on the city name? 
+    var cityPoints = $.getJSON("data/JunePhotoperiodKY.geojson", function(data) {
+        var cityPoints = L.geoJson(data, {
+            pointToLayer: function (feature, latlng){
+                return L.circleMarker(latlng);
+            },
+            style: function(feature) {
+                return {
+                    color: '#000000',
+                    weight: 1,
+                    fillOpacity: 1,
+                    radius: 5
+                }
+            },
+            onEachFeature : function(feature,layer){
+            layer.on('mouseover', function() {
+              layer.setStyle({
+                color: 'yellow',
+                fillColor: 'yellow'
+              });
+            });
+            layer.on('mouseout', function() {
+              layer.setStyle({
+                color: '#000000',
+                fillColor: '#000000'
+              });
+            });	
+
+          // name of power plant in toolip
+          layer.bindTooltip(`<b>${feature.properties.City}</b><br>
+                            Zip code: ${feature.properties.Zip}`);
+          }
+            
+        }).addTo(map);
+   });
 
     // // Tell jQuery to wait until data is loaded before executing a function
     // $.when(countyLayer).done(function () {
