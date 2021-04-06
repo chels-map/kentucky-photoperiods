@@ -259,9 +259,15 @@
 
           // name of power plant in toolip
           layer.bindTooltip(`<b>${feature.properties.City}</b><br>
-                            Zip code: ${feature.properties.Zip}`);
+                            <b>Photoperiod:</b>${feature.properties.Duration}<br>
+                            Zip code: ${feature.properties.Zip}<br>
+                            A way to add County name?`);
+          //Photoperiod is encoded as a STRING
+          //Need to change to a numeric value
+          console.log(typeof feature.properties.Duration)
+
           }
-            
+     
         }).addTo(map);
    });
 
