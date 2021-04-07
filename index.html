@@ -15,9 +15,9 @@
     body {
       margin: 0;
       padding: 0;
-      background: whitesmoke;
+      background: rgb(37, 51, 131);
       font-family: Lato, sans-serif;
-      color: #0D0000;
+      color: #e6e6e6;
     }
 
     header {
@@ -28,20 +28,20 @@
     h1 {
       display: inline-block;
       margin-right: 20px;
-      color: #001323;
+      color: #e6e6e6;
     }
 
     h2 {
       display: inline-block;
-      color: #001323;
+      color: #e6e6e6;
     }
 
     #map {
       width: 80%;
       height: 540px;
       margin: 10px 10%;
-      background: whitesmoke;
-      border: 2px solid #dddedf;
+      background: rgb(245, 244, 236);
+      border: 2px solid #ecdf20;
     }
 
     footer {
@@ -51,7 +51,7 @@
 
     p {
       font-size: 1em;
-      color: #001323;
+      color: #ffffff;
     }
 
     .legend {
@@ -87,7 +87,7 @@
 <body>
   <header>
     <h1>Photoperiod in Kentucky</h1>
-    <h2>June and December</h2>
+    <h2>June 2020</h2>
   </header>
 
   <div id='map'></div>
@@ -110,17 +110,35 @@
   </script>
 
   <script>
-    //Goal - 5 breaks for JUNE photoperiod
-    var options = {
-        center: [37.8, -85.8],
-        zoom: 7.4,
-        zoomSnap: .1,
-        zoomControl: false
-    }
+
+//------------------CODE FOR REGULAR MAP------------------------
+    // var options = {
+    //     center: [37.8, -85.8],
+    //     zoom: 7.4,
+    //     zoomSnap: .1,
+    //     zoomControl: false
+    // }
+    // var map = L.map('map', options);
+
+//------------------CODE TO ADD TILESET------------------------
+    // Create Leaflet map with above options.
     var map = L.map('map', options);
 
-    // var rent = "RENT"; //Already normalized for each county I think
-    // var name = "NAME"; 
+    // Get basemap URL from Leaflet Providers BUT NOW from my file?
+    var basemap_url = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}'
+
+    // Get basemap attributes from Leaflet Providers
+    var basemap_attributes = {
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	    subdomains: 'abcd',
+	    minZoom: 6,
+    	 maxZoom: 14,
+	    ext: 'png'
+    }
+
+    // Add tileset as a layer in our map. 
+    var tiles = L.tileLayer(basemap_url, basemap_attributes).addTo(map);
+
 
     var countyLayer = $.getJSON("data/ky_county_boundaries.geojson", function(data) {
       var dataLayer = L.geoJson(data, {
@@ -129,7 +147,7 @@
               color: '#dddddd',
               weight: 1,
               fillOpacity: 1,
-              fillColor: '#ff99de'
+              fillColor: 'green' 
           };
         }
             
@@ -259,12 +277,12 @@
 
           // name of power plant in toolip
           layer.bindTooltip(`<b>${feature.properties.City}</b><br>
-                            <b>Photoperiod:</b>${feature.properties.Duration}<br>
+                            <b>Photoperiod:</b>${feature.properties.Duration}(%Day${feature.properties.percentDay})<br>
                             Zip code: ${feature.properties.Zip}<br>
                             A way to add County name?`);
           //Photoperiod is encoded as a STRING
           //Need to change to a numeric value
-          console.log(typeof feature.properties.Duration)
+          console.log(typeof feature.properties.percentDay)
 
           }
      
