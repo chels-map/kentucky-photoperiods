@@ -15,7 +15,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: rgb(37, 51, 131);
+      background: rgb(112, 152, 206);
       font-family: Lato, sans-serif;
       color: #e6e6e6;
     }
@@ -94,8 +94,13 @@
 
   <footer>
     <p>Map authored by Chelsea Maupin</p>
-    <p>The data  <a href = "https://data.census.gov/cedsci/">US Census Cartographic Boundary Shapefiles</a>, provided thanks to the 
-    New Maps Plus program at University of Kentucky.</p>
+    <p>County boundaries retrieved from <a href = "https://data.census.gov/cedsci/">US Census Bureau</a>, and photoperiod data is thanks to
+      Dr. Garrett Owen from the UK Horticulture Department.</p> <br>
+    <h2>The end goal of the map is this, made with IDW interpolation tool in QGIS, using the daylength data from my photoperiod dataset. 
+      I'll be adding the interpolation as a new basemap in Leaflet. <br>
+      <img src="FinalGoal.JPG" alt="" class="img-fill">
+
+    </h2>
 
   </footer>
 
@@ -112,32 +117,32 @@
   <script>
 
 //------------------CODE FOR REGULAR MAP------------------------
-    // var options = {
-    //     center: [37.8, -85.8],
-    //     zoom: 7.4,
-    //     zoomSnap: .1,
-    //     zoomControl: false
-    // }
-    // var map = L.map('map', options);
-
-//------------------CODE TO ADD TILESET------------------------
-    // Create Leaflet map with above options.
+    var options = {
+        center: [37.8, -85.8],
+        zoom: 7.4,
+        zoomSnap: .1,
+        zoomControl: false
+    }
     var map = L.map('map', options);
 
-    // Get basemap URL from Leaflet Providers BUT NOW from my file?
-    var basemap_url = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}'
+//------------------CODE TO ADD TILESET ?------------------------
+    // // Create Leaflet map with above options.
+    // var map = L.map('map', options);
 
-    // Get basemap attributes from Leaflet Providers
-    var basemap_attributes = {
-      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	    subdomains: 'abcd',
-	    minZoom: 6,
-    	 maxZoom: 14,
-	    ext: 'png'
-    }
+    // // Get basemap URL from Leaflet Providers BUT NOW from my file?
+    // var basemap_url = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}'
 
-    // Add tileset as a layer in our map. 
-    var tiles = L.tileLayer(basemap_url, basemap_attributes).addTo(map);
+    // // Get basemap attributes from Leaflet Providers
+    // var basemap_attributes = {
+    //   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	  //   subdomains: 'abcd',
+	  //   minZoom: 6,
+    // 	 maxZoom: 14,
+	  //   ext: 'png'
+    // }
+
+    // // Add tileset as a layer in our map. 
+    // var tiles = L.tileLayer(basemap_url, basemap_attributes).addTo(map);
 
 
     var countyLayer = $.getJSON("data/ky_county_boundaries.geojson", function(data) {
@@ -147,7 +152,7 @@
               color: '#dddddd',
               weight: 1,
               fillOpacity: 1,
-              fillColor: 'green' 
+              fillColor: 'orange' 
           };
         }
             
@@ -255,7 +260,7 @@
             },
             style: function(feature) {
                 return {
-                    color: '#000000',
+                    color: 'gray',
                     weight: 1,
                     fillOpacity: 1,
                     radius: 5
@@ -270,19 +275,19 @@
             });
             layer.on('mouseout', function() {
               layer.setStyle({
-                color: '#000000',
-                fillColor: '#000000'
+                color: 'gray',
+                fillColor: 'gray'
               });
             });	
 
           // name of power plant in toolip
           layer.bindTooltip(`<b>${feature.properties.City}</b><br>
-                            <b>Photoperiod:</b>${feature.properties.Duration}(%Day${feature.properties.percentDay})<br>
+                            <b>Photoperiod:</b>${feature.properties.Duration} hours )<br>
                             Zip code: ${feature.properties.Zip}<br>
-                            A way to add County name?`);
+                            add County name?`);
           //Photoperiod is encoded as a STRING
           //Need to change to a numeric value
-          console.log(typeof feature.properties.percentDay)
+          //console.log(typeof feature.properties.percentDay)
 
           }
      
