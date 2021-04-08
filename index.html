@@ -149,12 +149,30 @@
       var dataLayer = L.geoJson(data, {
         style: function(feature) {
           return {
-              color: '#dddddd',
+              color: 'gray',
               weight: 1,
               fillOpacity: 0, //Hmm this is drawing OVER the datapoints...
               fillColor: 'orange' 
           };
-        }
+        },
+        onEachFeature : function(feature,layer){
+            layer.on('mouseover', function() {
+              layer.setStyle({
+                color: 'yellow',
+                fillColor: 'yellow'
+              });
+            });
+            layer.on('mouseout', function() {
+              layer.setStyle({
+                color: 'gray',
+                fillOpacity: 0,
+                fillColor: 'orange'
+              });
+            });	
+          console.log(feature.properties.NAME)
+          // name of power plant in toolip
+          layer.bindTooltip(`<b>${feature.properties.NAME}</b>`);
+          }
             
       }).addTo(map);
       drawAnotherLayer()
@@ -162,8 +180,6 @@
     //   drawMap(dataLayer); 
     });
 
-
-    // function drawMap(dataLayer) {
 
 
     // //ADD LEGEND      
@@ -201,6 +217,7 @@
     // }
 
     //Adding city points, will add layer name 
+    //This is being added AFTER the counties layer, and the mouseover functions are not working...
     var cityPoints = $.getJSON("data/KYCityPoints.geojson", function(data) {
         var cityPoints = L.geoJson(data, {
             pointToLayer: function (feature, latlng){
@@ -214,6 +231,7 @@
                     radius: 5
                 }
             },
+            //This isn't working PLUS change to a click event 
             onEachFeature : function(feature,layer){
             layer.on('mouseover', function() {
               layer.setStyle({
