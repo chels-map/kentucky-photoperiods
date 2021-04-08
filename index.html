@@ -125,6 +125,17 @@
     }
     var map = L.map('map', options);
 
+     // Overlay layers (TMS)
+     var lyr = L.tileLayer('tilesets/JuneKY/{z}/{x}/{y}.png', {
+       tms: true, 
+       opacity: 1, 
+       attribution: "", 
+       minZoom: 7, 
+       maxZoom: 11});
+
+    lyr.addTo(map)
+
+
 //------------------CODE TO ADD TILESET ?------------------------
     // // Create Leaflet map with above options.
     // var map = L.map('map', options);
@@ -151,7 +162,7 @@
           return {
               color: '#dddddd',
               weight: 1,
-              fillOpacity: 1,
+              fillOpacity: 0,
               fillColor: 'orange' 
           };
         }
@@ -291,7 +302,7 @@
 
           }
      
-        }).addTo(map);
+        })//.addTo(map);
    });
 
     // // Tell jQuery to wait until data is loaded before executing a function
