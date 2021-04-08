@@ -125,24 +125,17 @@
     }
     var map = L.map('map', options);
 
-//------------------CODE TO ADD TILESET ?------------------------
-    // // Create Leaflet map with above options.
-    // var map = L.map('map', options);
+//------------------CODE TO ADD TILESET -----------------------
+         // Overlay layers (TMS)
+    var lyr = L.tileLayer('tilesets/JuneKY2/{z}/{x}/{y}.png', {
+      tms: true, 
+      opacity: 1, 
+      attribution: "", 
+      minZoom: 7, 
+      maxZoom: 11});
 
-    // // Get basemap URL from Leaflet Providers BUT NOW from my file?
-    // var basemap_url = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}'
+    lyr.addTo(map)
 
-    // // Get basemap attributes from Leaflet Providers
-    // var basemap_attributes = {
-    //   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	  //   subdomains: 'abcd',
-	  //   minZoom: 6,
-    // 	 maxZoom: 14,
-	  //   ext: 'png'
-    // }
-
-    // // Add tileset as a layer in our map. 
-    // var tiles = L.tileLayer(basemap_url, basemap_attributes).addTo(map);
 
 
     var countyLayer = $.getJSON("data/ky_county_boundaries.geojson", function(data) {
