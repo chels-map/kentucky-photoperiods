@@ -151,7 +151,7 @@
           return {
               color: '#dddddd',
               weight: 1,
-              fillOpacity: 1,
+              fillOpacity: 0, //Hmm this is drawing OVER the datapoints...
               fillColor: 'orange' 
           };
         }
@@ -164,56 +164,6 @@
 
 
     // function drawMap(dataLayer) {
-    //    var breaks = getClassBreaks(dataLayer);
-    //    dataLayer.eachLayer(function(layer) {
-        
-    //     var props = layer.feature.properties;
-
-    //     layer.setStyle({
-    //       fillColor: getColor(props[rent], breaks) //CHANGE VALUE
-    //      });
-    //   });
-    //    //drawLegend(breaks) 
-    //  }
-
-
-    // function getClassBreaks(dataLayer) {
-    //   // create empty Array for storing values
-    //   var values = [];
-    //   dataLayer.eachLayer(function(layer) {       // loop through all the counties
-    //     var props = layer.feature.properties;
-    //     if(props[rent] != null){
-    //     var value = props[rent]; //CHANGE VALUE!! 
-    //     values.push(value);  
-    //     }
-    //   });
-
-    //   var clusters = ss.ckmeans(values, 5);  // determine similar clusters, create an array of the lowest value within each cluster
-    //                                            //Gives us the lower bound/upper bound of each cluster
-    //   var breaks = clusters.map(function(cluster){
-    //     return [cluster[0],cluster.pop()];   
-    //   });
-    //       console.log(breaks);
-    //       return breaks; // return Array of class breaks
-    // }                // end getClassBreaks function
-
-      //Have more expensive be a darker color
-      //Colors are ordered correctly in the function and yet it doesn't seem
-      //to be applying correctly....
-
-    //   function getColor(d, breaks) {
-    //         if(d <= breaks[0][1]) {
-    //             return '#f1eef6';
-    //         } else if(d <= breaks[1][1]) {
-    //             return '#bdc9e1';
-    //         } else if(d <= breaks[2][1]) {
-    //             return '#74a9cf';
-    //         } else if(d <= breaks[3][1]) {
-    //             return '#2b8cbe'
-    //         } else if(d <= breaks[4][1]) {
-    //             return '#045a8d'
-    //         }
-    //     } 
 
 
     // //ADD LEGEND      
@@ -250,10 +200,8 @@
     //   legend.addTo(map);
     // }
 
-    //Adding city points, will add layer name
-    //WHOA this takes forever to load, maybe I could add just the 10-15 biggest cities to the map?
-    //Look up top 10 cities, then filter based on the city name? 
-    var cityPoints = $.getJSON("data/JunePhotoperiodKY.geojson", function(data) {
+    //Adding city points, will add layer name 
+    var cityPoints = $.getJSON("data/KYCityPoints.geojson", function(data) {
         var cityPoints = L.geoJson(data, {
             pointToLayer: function (feature, latlng){
                 return L.circleMarker(latlng);
@@ -282,90 +230,14 @@
 
           // name of power plant in toolip
           layer.bindTooltip(`<b>${feature.properties.City}</b><br>
-                            <b>Photoperiod:</b>${feature.properties.Duration} hours )<br>
-                            Zip code: ${feature.properties.Zip}<br>
-                            add County name?`);
-          //Photoperiod is encoded as a STRING
-          //Need to change to a numeric value
-          //console.log(typeof feature.properties.percentDay)
-
+                            <b>Photoperiod:</b>${feature.properties.Duration} hours)<br>
+                            County ${feature.properties.COUNTY}<br>`);
           }
      
         }).addTo(map);
    });
 
-    // // Tell jQuery to wait until data is loaded before executing a function
-    // $.when(countyLayer).done(function () {
-    // // load, filter, and style the state outline 
-    // $.getJSON("data/us_states_500k.geojson", function (data) {
-
-    //     var stateLayer = L.geoJson(data, {
-    //         style: function (feature) {
-    //         return {
-    //             // Let's experiment with these colors shortly
-    //             // color: '#222222', // Gray
-    //             color: '#ffffff', // White
-    //             // Make line weight larger than the county outline
-    //             weight: 2,
-    //             fillOpacity: 0,
-    //             // This property allows us control interactivty of layer
-    //             interactive: false
-    //         };
-    //         },
-
-    //         // Filter for the correct state to use
-    //         filter: function (feature) {
-    //         if (feature.properties.NAME == "Kentucky") {
-    //             return feature;
-    //         }
-    //         }
-    //     });
-
-    //     // Add layer to map!
-    //     stateLayer.addTo(map)
-
-    //  });
-    // });
-
-
-//FETCH!
-// // Make the call to external data
-// fetch('data/ky_counties_housing.json')
-//   // When the server responds, let's evaluate the response
-//   .then(function (response) {
-//     // Look at the response
-//     console.log(response)
-//     // The API call was successful!
-//     if (response.ok) {
-//         // Parse the response as a JSON and return it
-//         return response.json() 
-//     } else { 
-//         // Present the numeric status code if it fails. 
-//         throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//   })
-//   // Pass the returned value of previous .then() method as 'data'
-//   .then(function (data) {
-//     // Draw basic map from data
-//     var dataLayer = L.geoJson(data, {
-//       style: function (feature) {
-//         return {
-//           color: 'white',
-//           weight: 1,
-//           fillOpacity: 1,
-//           fillColor: '#1f78b4'
-//         };
-//       }
-//     }).addTo(map)
-//     // Make call to update map
-//     drawMap(dataLayer);
-//   })
-//   .then(function () {
-//     // Draw another layer after the previous .then() resolves
-//     drawAnotherLayer()
-//   })
   
-
   // Define a function that fetches data and then draws another layer
   function drawAnotherLayer() {
     fetch("data/ky_bordering_states.geojson").then(function (response) {
