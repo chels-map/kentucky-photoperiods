@@ -95,10 +95,7 @@
   <footer>
     <p>Map authored by Chelsea Maupin</p>
     <p>County boundaries retrieved from <a href = "https://data.census.gov/cedsci/">US Census Bureau</a>, and photoperiod data is thanks to
-      Dr. Garrett Owen from the UK Horticulture Department.</p> <br>
-    <h2>The end goal of the map is this, made with IDW interpolation tool in QGIS, using the daylength data from my photoperiod dataset. 
-      I'll be adding the interpolation as a new basemap in Leaflet. <br>
-      <img src="FinalGoal.JPG" alt="" class="img-fill">
+      Dr. Garrett Owen from the UK Horticulture Department.</p> <br> <img src="data/potato.png" alt="Cute Potato" class="">
 
     </h2>
 
@@ -136,7 +133,7 @@
 
     lyr.addTo(map)
 
-
+//-------------------------------------------------------------
 
     var countyLayer = $.getJSON("data/ky_county_boundaries.geojson", function(data) {
       var dataLayer = L.geoJson(data, {
@@ -152,14 +149,15 @@
             layer.on('mouseover', function() {
               layer.setStyle({
                 color: 'yellow',
-                fillColor: 'yellow'
+                fillColor: 'yellow',
+                fillOpacity: 1
               });
             });
             layer.on('mouseout', function() {
               layer.setStyle({
                 color: 'gray',
                 fillOpacity: 0,
-                fillColor: 'orange'
+                fillColor: 'gray'
               });
             });	
           console.log(feature.properties.NAME)
@@ -169,45 +167,34 @@
             
       }).addTo(map);
       drawAnotherLayer()
+      drawLegend() 
       // call to new function here gets the data out of the callback function
     //   drawMap(dataLayer); 
     });
 
+    function drawLegend(breaks) {
+      // create the Leaflet control and position
+      var legend = L.control({position: 'topleft'});
 
+      // when it's added to the map
+      legend.onAdd = function () {
 
-    // //ADD LEGEND      
-    // function drawLegend(breaks){
-    //   // create a new Leaflet control object, and position it top left
-    //   var legend = L.control({position: 'topleft'});
-    //   // when the legend is added to the map
-    //   legend.onAdd = function () {
-    //       // create a new HTML <div> element and give it a class name of "legend"
-    //       var div = L.DomUtil.create('div', 'legend');
+        // create a new DOM div element with a class name of "legend"
+        var div = L.DomUtil.create('div', 'legend');
 
-    //       // first append an <h3> tag to the div holding the current attribute
-    //       // and norm values (i.e., the mapped phenomena)
-    //       div.innerHTML = `<h3>$${rent} in ${name}</h3>`;
+        // insert some placeholder text for now
+        div.innerHTML = 'Legend info will go here'; 
+        //div.innerHTML += `<label>${<img src="data/potato.png" alt="Cute Potato" class="img-fill">} </label>`;
 
-    //       // for each of our breaks
-    //       for (var i = 0; i < breaks.length; i++) {
-    //           // determine the color associated with each break value,
-    //           // including the lower range value
-              
-    //           var color = getColor(breaks[i][0], breaks);
+        // return the div element
+        return div;
 
-    //           // concatenate a <span> tag styled with the color and the range values
-    //           // of that class and include a label with the low and a high ends of that class range
-    //           div.innerHTML +=
-    //               `<span style="background:${color}"></span>
-    //               <label>${(breaks[i][0]*100).toLocaleString()}&mdash;
-    //               ${(breaks[i][1]*100).toLocaleString()}</label>`;
-    //       }
-    //       // return the populated div to be added to the map
-    //       return div;
-    //   };
-    //   // add the legend to the map
-    //   legend.addTo(map);
-    // }
+      };
+
+      // add the legend to the map
+      legend.addTo(map);
+      }
+
 
     //Adding city points, will add layer name 
     //This is being added AFTER the counties layer, and the mouseover functions are not working...
@@ -224,7 +211,7 @@
                     radius: 5
                 }
             },
-            //This isn't working PLUS change to a click event 
+            //This isn't working PLUS change to a click event...
             onEachFeature : function(feature,layer){
             layer.on('mouseover', function() {
               layer.setStyle({
@@ -263,7 +250,8 @@
           return {
             color: '#444',
             weight: 2,
-            fillOpacity: 0,
+            fillColor: 'white',
+            fillOpacity: 1,
             interactive: false
           };
         }
