@@ -11,6 +11,10 @@
   crossorigin=""/>
   <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
+  <!---------------------------FUN FONTS------------------------->
+
+
+
   <style>
     body {
       margin: 0;
@@ -50,14 +54,14 @@
     }
 
     p {
-      font-size: 1em;
-      color: #ffffff;
+      font-size: 1.4em;
+      color: #e6e6e6;
     }
 
     .legend {
         padding: 6px 8px;
         font-size: 1em;
-        background: rgba(255,255,255,0.8);
+        background: rgba(0, 0, 0, 0.8);
         box-shadow: 0 0 15px rgba(0,0,0,0.2);
         border-radius: 5px;
     }
@@ -93,10 +97,16 @@
   <div id='map'></div>
 
   <footer>
-    <p>Map authored by Chelsea Maupin</p>
+ 
+    <h2>What is Photoperiod?</h2>
+    <p>Photoperiod is the amount of time in a 24-hour period, i.e. daylength per day, 
+      in which a plant or animal is exposed to light. Many physiological processes are driven by photoperiod. 
+      Daylength data is especially important for greenhouse growers in Kentucky who need to plan crop flowering times,
+      as flowering is a daylength-dependent process. 
+    </p>
     <p>County boundaries retrieved from <a href = "https://data.census.gov/cedsci/">US Census Bureau</a>, and photoperiod data is thanks to
-      Dr. Garrett Owen from the UK Horticulture Department.</p> <br> <img src="data/potato.png" alt="Cute Potato" class="">
-
+      Dr. Garrett Owen from the UK Horticulture Department.</p> 
+      <p>Map authored by Chelsea Maupin</p>
     </h2>
 
   </footer>
@@ -135,6 +145,47 @@
 
 //-------------------------------------------------------------
 
+    //Adding city points
+    //This is being added AFTER the counties layer, and the mouseover functions are not working...
+    //There must be something going on with the order of my layer on the map, or something strange happened with the geojson I created
+    //I made a custom csv with the 15 most populous cities in Kentucky and their photoperiod
+
+  //   var cityPoints = $.getJSON("data/KYCityPoints.geojson", function(data) {
+  //       var cityPoints = L.geoJson(data, {
+  //           pointToLayer: function (feature, latlng){
+  //               return L.circleMarker(latlng);
+  //           },
+  //           style: function(feature) {
+  //               return {
+  //                   color: 'gray',
+  //                   weight: 1,
+  //                   fillOpacity: 1,
+  //                   radius: 5
+  //               }
+  //           },
+  //           //This isn't working PLUS change to a click event...
+  //           onEachFeature : function(feature,layer){
+  //           layer.on('mouseover', function() {
+  //             layer.setStyle({
+  //               color: 'yellow',
+  //               fillColor: 'yellow'
+  //             });
+  //           });
+  //           layer.on('mouseout', function() {
+  //             layer.setStyle({
+  //               color: 'gray',
+  //               fillColor: 'gray'
+  //             });
+  //           });	
+
+  //         // name of power plant in toolip
+  //         layer.bindTooltip(`<b>${feature.properties.City}</b><br>
+  //                           <b>Photoperiod:</b>${feature.properties.Duration} hours)`);
+  //         }
+     
+  //       }).addTo(map);
+  //  });    
+
     var countyLayer = $.getJSON("data/ky_county_boundaries.geojson", function(data) {
       var dataLayer = L.geoJson(data, {
         style: function(feature) {
@@ -143,7 +194,7 @@
               weight: 1,
               fillOpacity: 0, //Hmm this is drawing OVER the datapoints...
               fillColor: 'orange' 
-          };
+            };
         },
         onEachFeature : function(feature,layer){
             layer.on('mouseover', function() {
@@ -160,19 +211,17 @@
                 fillColor: 'gray'
               });
             });	
-          console.log(feature.properties.NAME)
-          // name of power plant in toolip
-          layer.bindTooltip(`<b>${feature.properties.NAME}</b>`);
+
+          layer.bindTooltip(`<b>${feature.properties.NAME} Co. </b>`);
           }
             
       }).addTo(map);
       drawAnotherLayer()
       drawLegend() 
-      // call to new function here gets the data out of the callback function
-    //   drawMap(dataLayer); 
+
     });
 
-    function drawLegend(breaks) {
+    function drawLegend(woot) {
       // create the Leaflet control and position
       var legend = L.control({position: 'topleft'});
 
@@ -183,8 +232,12 @@
         var div = L.DomUtil.create('div', 'legend');
 
         // insert some placeholder text for now
-        div.innerHTML = 'Legend info will go here'; 
-        //div.innerHTML += `<label>${<img src="data/potato.png" alt="Cute Potato" class="img-fill">} </label>`;
+        div.innerHTML = `<span style="background:#665500"></span>
+                        <label>Shortest Photoperiod:  14 hours, 30 minutes</label>
+                        <span style="background:#ffe873"></span>
+                        <label>Median Photoperiod:  14 hours, 42 minutes</label>
+                        <span style="background:#fff8d5"></span>
+                        <label>Longest Photoperiod: 14 hours, 55 minutes</label>`;
 
         // return the div element
         return div;
@@ -194,46 +247,6 @@
       // add the legend to the map
       legend.addTo(map);
       }
-
-
-    //Adding city points, will add layer name 
-    //This is being added AFTER the counties layer, and the mouseover functions are not working...
-    var cityPoints = $.getJSON("data/KYCityPoints.geojson", function(data) {
-        var cityPoints = L.geoJson(data, {
-            pointToLayer: function (feature, latlng){
-                return L.circleMarker(latlng);
-            },
-            style: function(feature) {
-                return {
-                    color: 'gray',
-                    weight: 1,
-                    fillOpacity: 1,
-                    radius: 5
-                }
-            },
-            //This isn't working PLUS change to a click event...
-            onEachFeature : function(feature,layer){
-            layer.on('mouseover', function() {
-              layer.setStyle({
-                color: 'yellow',
-                fillColor: 'yellow'
-              });
-            });
-            layer.on('mouseout', function() {
-              layer.setStyle({
-                color: 'gray',
-                fillColor: 'gray'
-              });
-            });	
-
-          // name of power plant in toolip
-          layer.bindTooltip(`<b>${feature.properties.City}</b><br>
-                            <b>Photoperiod:</b>${feature.properties.Duration} hours)<br>
-                            County ${feature.properties.COUNTY}<br>`);
-          }
-     
-        }).addTo(map);
-   });
 
   
   // Define a function that fetches data and then draws another layer
@@ -255,18 +268,9 @@
             interactive: false
           };
         }
-        // filter: function (feature) {
-        //   console.log(feature.properties.NAME)
-        //   if (feature.properties.NAME == ("Kentucky" && "Indiana" && "Ohio")) {
-        //     return feature;
-        //   }
-        // }
       }).addTo(map)
     })
   }
-
-
-
 
     //Add Zoom control
     map.addControl( L.control.zoom({ position: 'topright' }));
